@@ -1,0 +1,64 @@
+# Archivo de credenciales (NUNCA subir a GitHub)
+.env
+
+# Google Credentials JSON
+google_credentials.json
+*.json
+
+# Archivo de consecutivo
+consecutivo.txt
+
+# Archivos Excel generados y temporales
+*.xlsx
+*.xls
+
+# Entorno virtual de Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Archivos de caché de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Archivos de IDE y editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+
+# Archivos de configuración locales
+.env.local
+.env.*.local
+
+# Archivos temporales
+*.tmp
+*.bak
