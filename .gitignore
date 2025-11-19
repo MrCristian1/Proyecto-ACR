@@ -8,9 +8,11 @@ google_credentials.json
 # Archivo de consecutivo
 consecutivo.txt
 
-# Archivos Excel generados y temporales
+# Archivos Excel generados y temporales (pero NO el formato base)
 *.xlsx
 *.xls
+# Permitir el formato base necesario para la app
+!Formato*.xlsx
 
 # Entorno virtual de Python
 env/
