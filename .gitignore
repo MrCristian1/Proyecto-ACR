@@ -1,6 +1,9 @@
 # Archivo de credenciales (NUNCA subir a GitHub)
 .env
 
+# Streamlit secrets (NUNCA subir a GitHub)
+.streamlit/secrets.toml
+
 # Google Credentials JSON
 google_credentials.json
 *.json

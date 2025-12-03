@@ -30,12 +30,20 @@ def enviar_acr_smtp_env(archivo_bytes, nombre_archivo):
     
     SMTP_SERVER = "smtp.gmail.com"
     SMTP_PORT = 587
-    SMTP_USER = os.getenv("SMTP_USER")
-    SMTP_PASS = os.getenv("SMTP_PASS")
-    DESTINATARIO = os.getenv("DESTINATARIO")
+    
+    # Intentar cargar desde secrets primero, luego desde .env
+    try:
+        SMTP_USER = st.secrets["general"]["SMTP_USER"]
+        SMTP_PASS = st.secrets["general"]["SMTP_PASS"]
+        DESTINATARIO = st.secrets["general"]["DESTINATARIO"]
+    except (KeyError, FileNotFoundError):
+        # Fallback a variables de entorno
+        SMTP_USER = os.getenv("SMTP_USER")
+        SMTP_PASS = os.getenv("SMTP_PASS")
+        DESTINATARIO = os.getenv("DESTINATARIO")
 
     if not SMTP_USER or not SMTP_PASS or not DESTINATARIO:
-        st.error("Faltan variables SMTP_USER, SMTP_PASS o DESTINATARIO en el archivo .env")
+        st.error("Faltan variables SMTP_USER, SMTP_PASS o DESTINATARIO en secrets.toml o .env")
         return False
     
     # Validar que el destinatario sea del dominio permitido
@@ -457,10 +465,15 @@ def conectar_google_sheets():
             # No hay secrets.toml, continuar con archivo local
             pass
         
-        # Desarrollo local: usar archivo JSON
-        load_dotenv()
-        credentials_file = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "google_credentials.json")
-        sheet_name = os.getenv("GOOGLE_SHEET_NAME", "ACR_Consecutivos")
+        # Desarrollo local: intentar secrets primero, luego archivo JSON
+        try:
+            sheet_name = st.secrets["general"]["GOOGLE_SHEET_NAME"]
+        except (KeyError, FileNotFoundError):
+            load_dotenv()
+            credentials_file = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "google_credentials.json")
+            sheet_name = os.getenv("GOOGLE_SHEET_NAME", "ACR_Consecutivos")
+        else:
+            credentials_file = "google_credentials.json"
         
         if not os.path.exists(credentials_file):
             print(f"Archivo de credenciales no encontrado: {credentials_file}")
@@ -1245,24 +1258,30 @@ def generar_analisis_ia_simple(descripcion_problema):
     try:
         print(f"DEBUG: Iniciando análisis IA con descripción: {descripcion_problema[:50]}...")
         
-        # Cargar API key
-        load_dotenv()
-        api_key = os.getenv("GEMINI_API_KEY")
-        print(f"DEBUG: API Key encontrada: {bool(api_key)} (longitud: {len(api_key) if api_key else 0})")
-        
-        if not api_key:
-            print("DEBUG: No se encontró API key en environment, intentando leer .env...")
-            try:
-                with open('.env', 'r') as f:
-                    content = f.read()
-                    for line in content.split('\n'):
-                        if line.startswith('GEMINI_API_KEY='):
-                            api_key = line.split('=', 1)[1].strip()
-                            print(f"DEBUG: API Key leída de .env: {bool(api_key)} (longitud: {len(api_key) if api_key else 0})")
-                            break
-            except Exception as e:
-                print(f"DEBUG: Error leyendo .env: {e}")
-                return None
+        # Cargar API key desde secrets primero, luego .env
+        api_key = None
+        try:
+            api_key = st.secrets["general"]["GEMINI_API_KEY"]
+            print(f"DEBUG: API Key cargada desde secrets: {bool(api_key)} (longitud: {len(api_key) if api_key else 0})")
+        except (KeyError, FileNotFoundError):
+            print("DEBUG: No se encontró secrets.toml, intentando .env...")
+            load_dotenv()
+            api_key = os.getenv("GEMINI_API_KEY")
+            print(f"DEBUG: API Key encontrada en .env: {bool(api_key)} (longitud: {len(api_key) if api_key else 0})")
+            
+            if not api_key:
+                print("DEBUG: No se encontró API key en environment, intentando leer .env directamente...")
+                try:
+                    with open('.env', 'r') as f:
+                        content = f.read()
+                        for line in content.split('\n'):
+                            if line.startswith('GEMINI_API_KEY='):
+                                api_key = line.split('=', 1)[1].strip()
+                                print(f"DEBUG: API Key leída de .env: {bool(api_key)} (longitud: {len(api_key) if api_key else 0})")
+                                break
+                except Exception as e:
+                    print(f"DEBUG: Error leyendo .env: {e}")
+                    return None
         
         if not api_key:
             print("DEBUG: No se pudo obtener API key")
@@ -1384,10 +1403,15 @@ def generar_analisis_ia(descripcion_problema):
         # Mostrar estado inicial
         st.write("🔍 Iniciando análisis IA...")
         
-        # Recargar variables de entorno
-        load_dotenv()
+        # Cargar API key desde secrets primero, luego .env
+        api_key = None
+        try:
+            api_key = st.secrets["general"]["GEMINI_API_KEY"]
+        except (KeyError, FileNotFoundError):
+            # Recargar variables de entorno
+            load_dotenv()
+            api_key = os.getenv("GEMINI_API_KEY")
         
-        api_key = os.getenv("GEMINI_API_KEY")
         if not api_key or len(api_key) != 39:
             # Leer directamente del archivo .env
             try:
