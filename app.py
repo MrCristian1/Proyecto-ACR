@@ -554,9 +554,19 @@ def crear_nueva_acr():
             key="consecutivo"
         )
 
-        fuente_origen = st.text_input(
+        fuente_origen = st.selectbox(
             "Fuente en la que se origina",
-            placeholder="Fuente del problema...",
+            options=[
+                "Hallazgos (no conformidades u oportunidades de mejora) encontrados en las auditorías internas o externas de calidad y SST",
+                "Identificación de Riesgos",
+                "Revisión por la dirección",
+                "Quejas presentadas por los clientes",
+                "Salidas no conformes",
+                "Reuniones con el cliente",
+                "Revisión del proceso",
+                "Evaluaciones de desempeño",
+                "Resultados de los indicadores"
+            ],
             key="fuente_origen"
         )
 
@@ -573,7 +583,6 @@ def crear_nueva_acr():
                 "Gestión de Talento Humano",
                 "Employer of Record",
                 "Gestión Integral",
-                "BPO",
                 "Outsourcing de tesorería"
             ],
             key="proceso"
@@ -640,9 +649,8 @@ def crear_nueva_acr():
     
     # SEGUNDA SECCIÓN: CORRECCIÓN
     st.markdown("### 🔧 CORRECCIÓN (No aplica para riesgos)")
+    st.markdown('<p style="font-size: 1rem; font-weight: 400; color: #cbd5e1; margin-top: 0.5rem;">Actividades inmediatas realizadas para subsanar lo ocurrido</p>', unsafe_allow_html=True)
     st.markdown("---")
-    
-    st.markdown("**Actividades de corrección inmediata:**")
     
     # Inicializar session state para actividades de corrección
     if 'num_actividades_corr' not in st.session_state:
@@ -651,28 +659,64 @@ def crear_nueva_acr():
     # Crear tabla visual para corrección (dinámico, máximo 15 actividades: filas 12-26)
     for i in range(st.session_state.num_actividades_corr):
         st.markdown(f"**Actividad {i+1}:**")
-        col_act1, col_act2, col_act3, col_act4, col_act5, col_act6, col_act7 = st.columns([2, 1, 1, 1, 1, 1, 1])
         
+        # Primera fila: Actividad y Recursos (se comparten entre todos los responsables)
+        col_act1, col_act2 = st.columns([3, 2])
         with col_act1:
             st.text_input(f"Actividad", key=f"corr_actividad_{i}", placeholder="Descripción de la actividad...")
-        
         with col_act2:
-            st.text_input(f"Recursos", key=f"corr_recursos_{i}", placeholder="Recursos necesarios...")
+            st.multiselect(f"Recursos", key=f"corr_recursos_{i}", options=["Financieros", "Tecnológicos", "Humanos"])
         
-        with col_act3:
-            st.text_input(f"Responsable", key=f"corr_responsable_{i}", placeholder="Nombre del responsable...")
+        # Inicializar número de responsables para esta actividad
+        if f'num_responsables_corr_{i}' not in st.session_state:
+            st.session_state[f'num_responsables_corr_{i}'] = 1
         
-        with col_act4:
-            st.number_input(f"Tiempo (Horas)", min_value=0.0, step=0.5, key=f"corr_tiempo_{i}")
+        # Responsables de esta actividad
+        for j in range(st.session_state[f'num_responsables_corr_{i}']):
+            # Mostrar títulos solo en el primer responsable
+            if j == 0:
+                col_h1, col_h2, col_h3, col_h4, col_h5 = st.columns([2, 1, 1, 1, 1])
+                with col_h1:
+                    st.markdown("**Responsable**")
+                with col_h2:
+                    st.markdown("**Tiempo (Horas)**")
+                with col_h3:
+                    st.markdown("**Fecha Inicio**")
+                with col_h4:
+                    st.markdown("**Fecha Fin**")
+                with col_h5:
+                    st.markdown("**Costo**")
+            
+            col_r1, col_r2, col_r3, col_r4, col_r5 = st.columns([2, 1, 1, 1, 1])
+            
+            with col_r1:
+                st.text_input(f"Responsable {j+1}", key=f"corr_responsable_{i}_{j}", placeholder="Nombre del responsable...", label_visibility="collapsed")
+            
+            with col_r2:
+                st.number_input(f"Tiempo {j+1}", min_value=0.0, step=0.5, key=f"corr_tiempo_{i}_{j}", label_visibility="collapsed")
+            
+            with col_r3:
+                st.date_input(f"Fecha Inicio {j+1}", value=None, key=f"corr_fecha_inicio_{i}_{j}", label_visibility="collapsed")
+            
+            with col_r4:
+                st.date_input(f"Fecha Fin {j+1}", value=None, key=f"corr_fecha_fin_{i}_{j}", label_visibility="collapsed")
+            
+            with col_r5:
+                st.text_input(f"Costo {j+1}", key=f"corr_costo_{i}_{j}", placeholder="Ej: 40000", label_visibility="collapsed")
         
-        with col_act5:
-            st.date_input(f"Fecha Inicio", value=None, key=f"corr_fecha_inicio_{i}")
-        
-        with col_act6:
-            st.date_input(f"Fecha Fin", value=None, key=f"corr_fecha_fin_{i}")
-        
-        with col_act7:
-            st.text_input(f"Costo", key=f"corr_costo_{i}", placeholder="Ej: 40000")
+        # Botones para agregar/quitar responsable a esta actividad
+        col_resp_btn1, col_resp_btn2 = st.columns(2)
+        with col_resp_btn1:
+            if st.button(f"➕ Agregar Responsable", key=f"add_resp_corr_{i}", use_container_width=True):
+                st.session_state[f'num_responsables_corr_{i}'] += 1
+                st.rerun()
+        with col_resp_btn2:
+            if st.button(f"➖ Quitar Responsable", key=f"del_resp_corr_{i}", use_container_width=True):
+                if st.session_state[f'num_responsables_corr_{i}'] > 1:
+                    st.session_state[f'num_responsables_corr_{i}'] -= 1
+                    st.rerun()
+                else:
+                    st.warning("⚠️ Debe haber al menos 1 responsable")
         
         if i < st.session_state.num_actividades_corr - 1:
             st.markdown("---")
@@ -695,6 +739,33 @@ def crear_nueva_acr():
     # TERCERA SECCIÓN: IDENTIFICACIÓN DE CAUSAS PRINCIPALES
     st.markdown("### 🔍 IDENTIFICACIÓN DE CAUSAS PRINCIPALES")
     st.markdown("---")
+    
+    # Explicación de la metodología de los 5 por qué
+    with st.expander("📚 ¿Qué es la metodología de los 5 Por Qué?", expanded=False):
+        st.markdown("""
+        La técnica de los **5 Por Qué** es una herramienta de análisis de causa raíz desarrollada por Sakichi Toyoda 
+        y utilizada ampliamente en el Sistema de Producción Toyota. Su objetivo es identificar la causa raíz de un 
+        problema preguntando "¿Por qué?" sucesivamente hasta llegar a la raíz del problema.
+        
+        **¿Cómo funciona?**
+        1. **Identifique el problema**: Describa claramente la situación o incidente
+        2. **Pregunte "¿Por qué ocurrió?"**: Identifique la causa inmediata
+        3. **Repita "¿Por qué?"**: Para cada respuesta, pregunte nuevamente "¿Por qué?" 
+        4. **Continúe hasta 5 veces**: O hasta que identifique la causa raíz
+        5. **Implemente acciones correctivas**: Enfocadas en la causa raíz, no en los síntomas
+        
+        **Ejemplo práctico:**
+        - **Problema**: El cliente canceló el contrato
+        - **¿Por qué 1?** Hubo errores repetidos en la nómina
+        - **¿Por qué 2?** No se verificaron los datos antes de enviar
+        - **¿Por qué 3?** No existe un proceso de doble verificación
+        - **¿Por qué 4?** No hay puntos de control definidos en el procedimiento
+        - **¿Por qué 5?** No se han actualizado los procesos con las lecciones aprendidas
+        
+        **Causa Raíz Identificada**: Falta de mejora continua en los procesos operativos
+        """)
+    
+    st.markdown("")
     
     # Botón de IA al inicio de esta sección
     col_ia1, col_ia2 = st.columns([1, 2])
@@ -749,7 +820,7 @@ def crear_nueva_acr():
     analisis_causa = st.text_area(
         "Análisis de causa",
         height=200,
-        placeholder="Ingrese el análisis de las causas o genérelo con IA arriba...",
+        placeholder="Aquí aparecerá el análisis hecho por la IA...",
         help="Puede ingresar el análisis manualmente o generarlo automáticamente con IA",
         key="texto_analisis_causa",
         max_chars=5000
@@ -815,42 +886,47 @@ def crear_nueva_acr():
     st.markdown("### 💡 PLAN DE ACCIÓN")
     st.markdown("---")
     
-    st.markdown("**Nuevo modelo: Tabla de actividades con causas asociadas**")
+    st.markdown("**Tabla de actividades con causas asociadas**")
     
-    # 1. CONFIGURACIÓN DE CAUSAS
-    st.markdown("#### 📋 **Paso 1: Definir Causas**")
+    # 1. RECOPILAR CAUSAS DEFINIDAS ANTERIORMENTE (oculto por ahora)
+    # st.markdown("#### 📋 **Causas disponibles para asociar:**")
     
-    # Inicializar session state para causas
-    if 'num_causas_pa' not in st.session_state:
-        st.session_state.num_causas_pa = 3
+    # Recopilar causas inmediatas - GUARDAR TEXTO COMPLETO
+    causas_disponibles = []  # Lista con texto completo para guardar
+    causas_display = []  # Lista con texto truncado solo para mostrar en UI
     
-    # Botones para agregar/quitar causas
-    col_causas_btn1, col_causas_btn2 = st.columns(2)
-    with col_causas_btn1:
-        if st.button("✚ Agregar Causa", key="add_causa_pa"):
-            st.session_state.num_causas_pa += 1
-            st.rerun()
-    with col_causas_btn2:
-        if st.button("━ Quitar Causa", key="del_causa_pa") and st.session_state.num_causas_pa > 1:
-            st.session_state.num_causas_pa -= 1
-            st.rerun()
+    num_causas_inmediatas = st.session_state.get('num_causas_inmediatas', 3)
+    for i in range(num_causas_inmediatas):
+        causa_inmediata = st.session_state.get(f'causa_inmediata_{i+1}', '')
+        if causa_inmediata and causa_inmediata.strip():
+            # Guardar texto completo
+            causas_disponibles.append(f"Inmediata {i+1}: {causa_inmediata}")
+            # Texto truncado solo para mostrar
+            causas_display.append(f"Inmediata {i+1}: {causa_inmediata[:50]}...")
     
-    # Campos para las causas
-    causas_disponibles = []
-    for i in range(st.session_state.num_causas_pa):
-        causa_text = st.text_area(
-            f"**Causa Asociada {i+1}:**", 
-            height=80,
-            key=f"pa_causa_def_{i}",
-            placeholder=f"Describe la causa asociada {i+1}..."
-        )
-        if causa_text:
-            causas_disponibles.append(f"Causa {i+1}")
+    # Recopilar causas raíz
+    num_causas_raiz = st.session_state.get('num_causas_raiz', 3)
+    for i in range(num_causas_raiz):
+        causa_raiz = st.session_state.get(f'causa_raiz_{i+1}', '')
+        if causa_raiz and causa_raiz.strip():
+            # Guardar texto completo
+            causas_disponibles.append(f"Raíz {i+1}: {causa_raiz}")
+            # Texto truncado solo para mostrar
+            causas_display.append(f"Raíz {i+1}: {causa_raiz[:50]}...")
     
-    st.markdown("---")
+    # Crear mapeo entre texto completo y texto truncado
+    causas_map = dict(zip(causas_disponibles, causas_display))
+    
+    # Mostrar mensaje informativo (oculto por ahora)
+    # if causas_disponibles:
+    #     st.info(f"📌 Se encontraron {len(causas_disponibles)} causa(s) definida(s) en la sección anterior. Puedes asociarlas a las actividades del plan de acción.")
+    # else:
+    #     st.warning("⚠️ No se encontraron causas definidas. Por favor, completa primero la sección 'IDENTIFICACIÓN DE CAUSAS PRINCIPALES'.")
+    
+    # st.markdown("---")
     
     # 2. TABLA DE ACTIVIDADES
-    st.markdown("#### 🎯 **Paso 2: Definir Actividades**")
+    st.markdown("#### 🎯 **Definir Actividades**")
     
     # Inicializar session state para actividades
     if 'num_actividades_pa' not in st.session_state:
@@ -860,7 +936,7 @@ def crear_nueva_acr():
     for i in range(st.session_state.num_actividades_pa):
         st.markdown(f"**ACTIVIDAD {i+1}:**")
         
-        # Fila 1: Actividad y Causas Asociadas
+        # Fila 1: Actividad y Causas Asociadas (se comparten entre todos los responsables)
         col_act1, col_act2 = st.columns([2, 1])
         
         with col_act1:
@@ -875,84 +951,96 @@ def crear_nueva_acr():
             if causas_disponibles:
                 causas_asociadas = st.multiselect(
                     "Causas asociadas a esta actividad",
-                    options=causas_disponibles,
+                    options=causas_disponibles,  # Opciones con texto completo
+                    format_func=lambda x: causas_map.get(x, x),  # Mostrar texto truncado
                     key=f"pa_causas_asociadas_{i}",
                     help="Selecciona una o varias causas que esta actividad ayudará a resolver"
                 )
             else:
-                st.warning("⚠️ Primero define las causas en el Paso 1")
                 causas_asociadas = []
         
-        # Fila 2: Campos de gestión
-        col_gest1, col_gest2, col_gest3 = st.columns(3)
+        # Inicializar número de responsables para esta actividad
+        if f'num_responsables_pa_{i}' not in st.session_state:
+            st.session_state[f'num_responsables_pa_{i}'] = 1
         
-        with col_gest1:
-            responsable_ej = st.text_input(
-                "Responsable Ejecución",
-                key=f"pa_resp_ej_nueva_{i}",
-                placeholder="Responsable de ejecutar..."
-            )
-            tiempo = st.number_input(
-                "Tiempo (Horas)",
-                min_value=0.0,
-                step=0.5,
-                key=f"pa_tiempo_nueva_{i}"
-            )
+        # Responsables de esta actividad
+        for j in range(st.session_state[f'num_responsables_pa_{i}']):
+            # Mostrar títulos solo en el primer responsable
+            if j == 0:
+                col_h1, col_h2, col_h3, col_h4, col_h5, col_h6, col_h7, col_h8, col_h9, col_h10 = st.columns([1.5, 1, 1, 1, 1, 1.5, 1, 1, 0.8, 0.8])
+                with col_h1:
+                    st.markdown("**Resp. Ejecución**")
+                with col_h2:
+                    st.markdown("**Tiempo (H)**")
+                with col_h3:
+                    st.markdown("**Costo**")
+                with col_h4:
+                    st.markdown("**F. Inicio**")
+                with col_h5:
+                    st.markdown("**F. Fin**")
+                with col_h6:
+                    st.markdown("**Resp. Seguimiento**")
+                with col_h7:
+                    st.markdown("**F. Seg.**")
+                with col_h8:
+                    st.markdown("**Estado**")
+                with col_h9:
+                    st.markdown("**Horas Seg.**")
+                with col_h10:
+                    st.markdown("**Costo Seg.**")
             
-        with col_gest2:
-            costo = st.text_input(
-                "Costo",
-                key=f"pa_costo_nueva_{i}",
-                placeholder="Ej: 40000"
-            )
-            fecha_inicio = st.date_input(
-                "Fecha Inicio",
-                value=None,
-                key=f"pa_fecha_inicio_nueva_{i}"
-            )
+            col_r1, col_r2, col_r3, col_r4, col_r5, col_r6, col_r7, col_r8, col_r9, col_r10 = st.columns([1.5, 1, 1, 1, 1, 1.5, 1, 1, 0.8, 0.8])
             
-        with col_gest3:
-            fecha_fin = st.date_input(
-                "Fecha Fin",
-                value=None,
-                key=f"pa_fecha_fin_nueva_{i}"
-            )
-            responsable_seg = st.text_input(
-                "Responsable Seguimiento",
-                key=f"pa_resp_seg_nueva_{i}",
-                placeholder="Responsable del seguimiento..."
+            with col_r1:
+                st.text_input(f"Resp. Ej. {j+1}", key=f"pa_resp_ej_nueva_{i}_{j}", placeholder="Responsable...", label_visibility="collapsed")
+            
+            with col_r2:
+                st.number_input(f"Tiempo {j+1}", min_value=0.0, step=0.5, key=f"pa_tiempo_nueva_{i}_{j}", label_visibility="collapsed")
+            
+            with col_r3:
+                st.text_input(f"Costo {j+1}", key=f"pa_costo_nueva_{i}_{j}", placeholder="40000", label_visibility="collapsed")
+            
+            with col_r4:
+                st.date_input(f"F. Inicio {j+1}", value=None, key=f"pa_fecha_inicio_nueva_{i}_{j}", label_visibility="collapsed")
+            
+            with col_r5:
+                st.date_input(f"F. Fin {j+1}", value=None, key=f"pa_fecha_fin_nueva_{i}_{j}", label_visibility="collapsed")
+            
+            with col_r6:
+                st.text_input(f"Resp. Seg. {j+1}", key=f"pa_resp_seg_nueva_{i}_{j}", placeholder="Responsable...", label_visibility="collapsed")
+            
+            with col_r7:
+                st.date_input(f"F. Seg. {j+1}", value=None, key=f"pa_fecha_seg_nueva_{i}_{j}", label_visibility="collapsed")
+            
+            with col_r8:
+                st.selectbox(f"Estado {j+1}", options=["", "Abierta", "Cerrada", "Parcial"], key=f"pa_estado_nueva_{i}_{j}", label_visibility="collapsed")
+            
+            with col_r9:
+                st.number_input(f"Horas Seg. {j+1}", min_value=0.0, step=0.5, key=f"pa_horas_seg_nueva_{i}_{j}", label_visibility="collapsed")
+            
+            with col_r10:
+                st.text_input(f"Costo Seg. {j+1}", key=f"pa_costo_seg_nueva_{i}_{j}", placeholder="40000", label_visibility="collapsed")
+            
+            # Evidencia (campo amplio para cada responsable)
+            st.text_input(
+                f"Evidencia de Verificación {j+1}",
+                key=f"pa_evidencia_nueva_{i}_{j}",
+                placeholder="Evidencia que demuestre el cumplimiento..."
             )
         
-        # Fila 3: Campos de seguimiento
-        col_seg1, col_seg2, col_seg3 = st.columns(3)
-        
-        with col_seg1:
-            fecha_seguimiento = st.date_input(
-                "Fecha Seguimiento",
-                value=None,
-                key=f"pa_fecha_seg_nueva_{i}"
-            )
-            
-        with col_seg2:
-            estado = st.selectbox(
-                "Estado",
-                options=["", "Abierta", "Cerrada", "Parcial"],
-                key=f"pa_estado_nueva_{i}"
-            )
-            
-        with col_seg3:
-            costo_seguimiento = st.text_input(
-                "Costo Seguimiento",
-                key=f"pa_costo_seg_nueva_{i}",
-                placeholder="Ej: 40000"
-            )
-        
-        # Evidencia (campo amplio)
-        evidencia = st.text_input(
-            "Evidencia de Verificación",
-            key=f"pa_evidencia_nueva_{i}",
-            placeholder="Evidencia que demuestre el cumplimiento..."
-        )
+        # Botones para agregar/quitar responsable a esta actividad
+        col_resp_btn1, col_resp_btn2 = st.columns(2)
+        with col_resp_btn1:
+            if st.button(f"➕ Agregar Responsable", key=f"add_resp_pa_{i}", use_container_width=True):
+                st.session_state[f'num_responsables_pa_{i}'] += 1
+                st.rerun()
+        with col_resp_btn2:
+            if st.button(f"➖ Quitar Responsable", key=f"del_resp_pa_{i}", use_container_width=True):
+                if st.session_state[f'num_responsables_pa_{i}'] > 1:
+                    st.session_state[f'num_responsables_pa_{i}'] -= 1
+                    st.rerun()
+                else:
+                    st.warning("⚠️ Debe haber al menos 1 responsable")
         
         # Mostrar causas asociadas si hay
         if causas_asociadas:
@@ -976,6 +1064,8 @@ def crear_nueva_acr():
     # QUINTA SECCIÓN: COSTOS ASOCIADOS A LA ACR
     st.markdown("### 💰 COSTOS ASOCIADOS A LA ACR")
     st.markdown("---")
+    st.markdown("**Se deben incluir los costos que sepan que se incurrieron con la ACR.**")
+    st.markdown("")
     
     col_costo1, col_costo2 = st.columns(2)
     
@@ -1586,38 +1676,104 @@ def generar_excel_acr_completo():
         if descripcion_situacion:
             escribir_celda_segura('A8', descripcion_situacion)
         
-        # SEGUNDA SECCIÓN: CORRECCIÓN (15 actividades: A12-A26)
+        # SEGUNDA SECCIÓN: CORRECCIÓN (15 actividades máximo: filas 12-26)
         num_actividades_corr_escritas = st.session_state.get('num_actividades_corr', 3)
         
-        for i in range(15):  # 15 actividades (0-14)
-            row = 12 + i  # Filas 12-26
-            actividad = st.session_state.get(f'corr_actividad_{i}', '')
-            recursos = st.session_state.get(f'corr_recursos_{i}', '')
-            responsable = st.session_state.get(f'corr_responsable_{i}', '')
-            tiempo = st.session_state.get(f'corr_tiempo_{i}', 0)
-            fecha_inicio = st.session_state.get(f'corr_fecha_inicio_{i}', '')
-            fecha_fin = st.session_state.get(f'corr_fecha_fin_{i}', '')
-            costo = convertir_a_numero(st.session_state.get(f'corr_costo_{i}', 0))
+        # Contador de fila actual para escribir en Excel
+        current_row = 12
+        max_row = 26  # Fila máxima para corrección
+        
+        for i in range(num_actividades_corr_escritas):
+            if current_row > max_row:
+                break  # No exceder el límite de filas
             
-            # Si la actividad está vacía y está más allá del número visible, ocultar fila
-            if not actividad and i >= num_actividades_corr_escritas:
-                sheet.row_dimensions[row].hidden = True
-            else:
-                # Escribir datos si existen
-                if actividad:
-                    escribir_celda_segura(f'A{row}', actividad)  # ACTIVIDADES A12-A26
-                if recursos:
-                    escribir_celda_segura(f'J{row}', recursos)   # RECURSOS J12-J26
+            actividad = st.session_state.get(f'corr_actividad_{i}', '')
+            recursos_list = st.session_state.get(f'corr_recursos_{i}', [])
+            recursos = ', '.join(recursos_list) if isinstance(recursos_list, list) else recursos_list
+            
+            # Obtener número de responsables para esta actividad
+            num_responsables = st.session_state.get(f'num_responsables_corr_{i}', 1)
+            
+            # Guardar la fila inicial de esta actividad para merge
+            start_row = current_row
+            
+            # Escribir cada responsable en una fila diferente
+            for j in range(num_responsables):
+                if current_row > max_row:
+                    break
+                
+                responsable = st.session_state.get(f'corr_responsable_{i}_{j}', '')
+                tiempo = st.session_state.get(f'corr_tiempo_{i}_{j}', 0)
+                fecha_inicio = st.session_state.get(f'corr_fecha_inicio_{i}_{j}', '')
+                fecha_fin = st.session_state.get(f'corr_fecha_fin_{i}_{j}', '')
+                costo = convertir_a_numero(st.session_state.get(f'corr_costo_{i}_{j}', 0))
+                
+                # Escribir actividad y recursos solo en la primera fila de cada actividad
+                if j == 0:
+                    if actividad:
+                        escribir_celda_segura(f'A{current_row}', actividad)
+                    if recursos:
+                        escribir_celda_segura(f'J{current_row}', recursos)
+                
+                # Escribir datos del responsable
                 if responsable:
-                    escribir_celda_segura(f'M{row}', responsable) # RESPONSABLES M12-M26
+                    escribir_celda_segura(f'M{current_row}', responsable)
                 if tiempo > 0:
-                    escribir_celda_segura(f'O{row}', tiempo)     # TIEMPO O12-O26
+                    escribir_celda_segura(f'O{current_row}', tiempo)
                 if fecha_inicio:
-                    escribir_celda_segura(f'R{row}', formatear_fecha(fecha_inicio)) # FECHA INICIO R12-R26
+                    escribir_celda_segura(f'R{current_row}', formatear_fecha(fecha_inicio))
                 if fecha_fin:
-                    escribir_celda_segura(f'V{row}', formatear_fecha(fecha_fin))    # FECHA FIN V12-V26
+                    escribir_celda_segura(f'V{current_row}', formatear_fecha(fecha_fin))
                 if costo > 0:
-                    escribir_celda_segura(f'Y{row}', costo)      # COSTO Y12-Y26
+                    escribir_celda_segura(f'Y{current_row}', costo)
+                
+                current_row += 1
+            
+            # Combinar celdas de Actividad y Recursos si hay múltiples responsables
+            end_row = current_row - 1
+            if num_responsables > 1 and start_row <= end_row:
+                try:
+                    # Primero deshacer combinaciones existentes en el rango
+                    for row in range(start_row, end_row + 1):
+                        # Deshacer combinación de Actividad (A:I) si existe
+                        try:
+                            if f'A{row}:I{row}' in [str(mc) for mc in sheet.merged_cells.ranges]:
+                                sheet.unmerge_cells(f'A{row}:I{row}')
+                        except:
+                            pass
+                        
+                        # Deshacer combinación de Recursos (J:L) si existe
+                        try:
+                            if f'J{row}:L{row}' in [str(mc) for mc in sheet.merged_cells.ranges]:
+                                sheet.unmerge_cells(f'J{row}:L{row}')
+                        except:
+                            pass
+                    
+                    # Ahora combinar el rango completo (horizontal + vertical)
+                    # Combinar celdas de Actividad (A hasta I horizontalmente, y verticalmente por número de responsables)
+                    if actividad:
+                        sheet.merge_cells(f'A{start_row}:I{end_row}')
+                        # Centrar verticalmente el texto
+                        sheet[f'A{start_row}'].alignment = openpyxl.styles.Alignment(
+                            horizontal='left',
+                            vertical='center',
+                            wrap_text=True
+                        )
+                    
+                    # Combinar celdas de Recursos (J hasta L horizontalmente, y verticalmente por número de responsables)
+                    if recursos:
+                        sheet.merge_cells(f'J{start_row}:L{end_row}')
+                        sheet[f'J{start_row}'].alignment = openpyxl.styles.Alignment(
+                            horizontal='left',
+                            vertical='center',
+                            wrap_text=True
+                        )
+                except Exception as e:
+                    print(f"Error combinando celdas: {e}")
+        
+        # Ocultar filas no utilizadas
+        for row in range(current_row, max_row + 1):
+            sheet.row_dimensions[row].hidden = True
         
         # TERCERA SECCIÓN: ANÁLISIS DE CAUSA
         analisis_causa = st.session_state.get('texto_analisis_causa', '')
@@ -1638,183 +1794,191 @@ def generar_excel_acr_completo():
             if causa_raiz:
                 escribir_celda_segura(f'F{filas_raiz[i]}', causa_raiz)
         
-        # CUARTA SECCIÓN: PLAN DE ACCIÓN (Nuevo modelo: A53-A72)
-        
-        # Obtener datos del nuevo modelo
-        num_causas_pa = st.session_state.get('num_causas_pa', 3)
+        # CUARTA SECCIÓN: PLAN DE ACCIÓN (Filas 53-72)
         num_actividades_pa = st.session_state.get('num_actividades_pa', 1)
         
-        # Primero, deshacemos todas las combinaciones existentes en el rango 53-72
-        rangos_a_eliminar = []
-        for merged_range in list(sheet.merged_cells.ranges):
-            if merged_range.min_row >= 53 and merged_range.max_row <= 72:
-                rangos_a_eliminar.append(merged_range)
+        # Contador de fila actual para escribir en Excel
+        current_row_pa = 53
+        max_row_pa = 72  # Fila máxima para plan de acción
         
-        for rango in rangos_a_eliminar:
-            sheet.unmerge_cells(str(rango))
+        # Función para formatear causas sin prefijos y con puntos
+        def formatear_causas_limpias(causas_list):
+            """Convierte lista de causas con prefijos en texto limpio con saltos de línea"""
+            if not causas_list:
+                return ''
+            causas_limpias = []
+            for causa in causas_list:
+                # Remover prefijos "Inmediata X:" o "Raíz X:"
+                if ':' in causa:
+                    causa_limpia = causa.split(':', 1)[1].strip()
+                else:
+                    causa_limpia = causa.strip()
+                causas_limpias.append(causa_limpia.capitalize())
+            # Unir con punto y doble salto de línea, agregar punto final a la última
+            return '.\n\n'.join(causas_limpias) + '.'
         
-        # 1. Crear mapa de causas y sus textos
-        causas_map = {}
-        for i in range(num_causas_pa):
-            causa_text = st.session_state.get(f'pa_causa_def_{i}', '')
-            if causa_text:
-                causas_map[f"Causa {i+1}"] = causa_text
+        # Agrupar actividades por causas idénticas
+        actividades_por_causas = {}  # {causas_texto: [lista de índices de actividades]}
+        actividades_info = []  # Lista con info de cada actividad
         
-        # 2. Crear mapa de actividades y sus causas asociadas
-        actividades_map = {}
         for i in range(num_actividades_pa):
-            actividad_text = st.session_state.get(f'pa_actividad_nueva_{i}', '')
+            actividad = st.session_state.get(f'pa_actividad_nueva_{i}', '')
             causas_asociadas = st.session_state.get(f'pa_causas_asociadas_{i}', [])
+            num_responsables_pa = st.session_state.get(f'num_responsables_pa_{i}', 1)
             
-            if actividad_text and causas_asociadas:
-                actividades_map[i] = {
-                    'texto': actividad_text,
-                    'causas': causas_asociadas,
-                    'responsable_ej': st.session_state.get(f'pa_resp_ej_nueva_{i}', ''),
-                    'tiempo': st.session_state.get(f'pa_tiempo_nueva_{i}', 0),
-                    'costo': convertir_a_numero(st.session_state.get(f'pa_costo_nueva_{i}', 0)),
-                    'fecha_inicio': st.session_state.get(f'pa_fecha_inicio_nueva_{i}', ''),
-                    'fecha_fin': st.session_state.get(f'pa_fecha_fin_nueva_{i}', ''),
-                    'responsable_seg': st.session_state.get(f'pa_resp_seg_nueva_{i}', ''),
-                    'fecha_seguimiento': st.session_state.get(f'pa_fecha_seg_nueva_{i}', ''),
-                    'estado': st.session_state.get(f'pa_estado_nueva_{i}', ''),
-                    'costo_seguimiento': convertir_a_numero(st.session_state.get(f'pa_costo_seg_nueva_{i}', 0)),
-                    'evidencia': st.session_state.get(f'pa_evidencia_nueva_{i}', '')
-                }
-        
-        # 3. Asignar filas a cada causa y crear matriz de asignación
-        fila_actual = 53  # Plan de Acción comienza en fila 53
-        causa_filas = {}  # {causa_nombre: [fila_inicio, fila_fin]}
-        actividad_filas = {}  # {actividad_idx: [fila_inicio, fila_fin]}
-        
-        # Calcular cuántas filas necesita cada causa
-        causas_con_actividades = {}
-        for actividad_idx, datos in actividades_map.items():
-            for causa in datos['causas']:
-                if causa not in causas_con_actividades:
-                    causas_con_actividades[causa] = []
-                causas_con_actividades[causa].append(actividad_idx)
-        
-        # Asignar filas a cada causa
-        for causa, actividades_indices in causas_con_actividades.items():
-            num_filas_causa = len(actividades_indices)
-            causa_filas[causa] = [fila_actual, fila_actual + num_filas_causa - 1]
+            # Crear clave única basada en las causas (ordenadas para comparación)
+            causas_key = tuple(sorted(causas_asociadas))
             
-            # Asignar filas a cada actividad de esta causa
-            for i, actividad_idx in enumerate(actividades_indices):
-                fila_actividad = fila_actual + i
-                if actividad_idx not in actividad_filas:
-                    actividad_filas[actividad_idx] = []
-                actividad_filas[actividad_idx].append(fila_actividad)
+            actividades_info.append({
+                'index': i,
+                'actividad': actividad,
+                'causas': causas_asociadas,
+                'causas_key': causas_key,
+                'num_responsables': num_responsables_pa,
+                'start_row': None,
+                'end_row': None
+            })
             
-            fila_actual += num_filas_causa
+            if causas_key:
+                if causas_key not in actividades_por_causas:
+                    actividades_por_causas[causas_key] = []
+                actividades_por_causas[causas_key].append(i)
         
-        # 4. Escribir causas y crear combinaciones verticales para causas
-        for causa, (fila_inicio, fila_fin) in causa_filas.items():
-            causa_text = causas_map.get(causa, '')
-            if causa_text:
-                # Escribir la causa en la primera fila
-                escribir_celda_segura(f'A{fila_inicio}', causa_text)
-                
-                # Combinar celdas A-D verticalmente si hay múltiples filas
-                if fila_inicio < fila_fin:
-                    try:
-                        sheet.merge_cells(f'A{fila_inicio}:D{fila_fin}')
-                        print(f"DEBUG: Combinando causa '{causa}': A{fila_inicio}:D{fila_fin}")
-                    except Exception as e:
-                        print(f"DEBUG: Error combinando causa '{causa}': {e}")
-                else:
-                    # Solo una fila, combinar horizontalmente
-                    try:
-                        sheet.merge_cells(f'A{fila_inicio}:D{fila_inicio}')
-                        print(f"DEBUG: Combinando causa '{causa}' (1 fila): A{fila_inicio}:D{fila_inicio}")
-                    except Exception as e:
-                        print(f"DEBUG: Error combinando causa '{causa}' (1 fila): {e}")
-        
-        # 5. Escribir actividades y crear combinaciones para actividades
-        for actividad_idx, datos in actividades_map.items():
-            filas_actividad = actividad_filas.get(actividad_idx, [])
+        # Escribir actividades en Excel
+        for i in range(num_actividades_pa):
+            if current_row_pa > max_row_pa:
+                break  # No exceder el límite de filas
             
-            if filas_actividad:
-                # Escribir la actividad en la primera fila donde aparece
-                primera_fila = min(filas_actividad)
-                ultima_fila = max(filas_actividad)
+            info = actividades_info[i]
+            actividad = info['actividad']
+            causas_asociadas = info['causas']
+            num_responsables_pa = info['num_responsables']
+            
+            # Guardar la fila inicial de esta actividad para merge
+            start_row_pa = current_row_pa
+            info['start_row'] = start_row_pa
+            
+            # Escribir cada responsable en una fila diferente
+            for j in range(num_responsables_pa):
+                if current_row_pa > max_row_pa:
+                    break
                 
-                # Escribir datos de la actividad
-                escribir_celda_segura(f'E{primera_fila}', datos['texto'])
+                # Datos del responsable
+                resp_ej = st.session_state.get(f'pa_resp_ej_nueva_{i}_{j}', '')
+                tiempo = st.session_state.get(f'pa_tiempo_nueva_{i}_{j}', 0)
+                costo = convertir_a_numero(st.session_state.get(f'pa_costo_nueva_{i}_{j}', 0))
+                fecha_inicio = st.session_state.get(f'pa_fecha_inicio_nueva_{i}_{j}', '')
+                fecha_fin = st.session_state.get(f'pa_fecha_fin_nueva_{i}_{j}', '')
+                resp_seg = st.session_state.get(f'pa_resp_seg_nueva_{i}_{j}', '')
+                fecha_seg = st.session_state.get(f'pa_fecha_seg_nueva_{i}_{j}', '')
+                estado = st.session_state.get(f'pa_estado_nueva_{i}_{j}', '')
+                horas_seg = st.session_state.get(f'pa_horas_seg_nueva_{i}_{j}', 0)
+                costo_seg = convertir_a_numero(st.session_state.get(f'pa_costo_seg_nueva_{i}_{j}', 0))
+                evidencia_resp = st.session_state.get(f'pa_evidencia_nueva_{i}_{j}', '')
                 
-                # Combinar E-I verticalmente si la actividad está en múltiples filas
-                if primera_fila < ultima_fila:
-                    try:
-                        sheet.merge_cells(f'E{primera_fila}:I{ultima_fila}')
-                        print(f"DEBUG: Combinando actividad {actividad_idx}: E{primera_fila}:I{ultima_fila}")
-                    except Exception as e:
-                        print(f"DEBUG: Error combinando actividad {actividad_idx}: {e}")
-                else:
-                    # Solo una fila, combinar horizontalmente
-                    try:
-                        sheet.merge_cells(f'E{primera_fila}:I{primera_fila}')
-                        print(f"DEBUG: Combinando actividad {actividad_idx} (1 fila): E{primera_fila}:I{primera_fila}")
-                    except Exception as e:
-                        print(f"DEBUG: Error combinando actividad {actividad_idx} (1 fila): {e}")
+                # Escribir causas y actividad solo en la primera fila de cada actividad
+                if j == 0:
+                    # Verificar si esta es la primera actividad con estas causas
+                    causas_key = info['causas_key']
+                    es_primera_con_estas_causas = (actividades_por_causas.get(causas_key, [])[0] == i if causas_key else True)
+                    
+                    if causas_asociadas and es_primera_con_estas_causas:
+                        causas_texto_limpio = formatear_causas_limpias(causas_asociadas)
+                        escribir_celda_segura(f'A{current_row_pa}', causas_texto_limpio)
+                    if actividad:
+                        escribir_celda_segura(f'E{current_row_pa}', actividad)
                 
-                # Escribir otros campos en todas las filas donde aparece la actividad
-                for fila in filas_actividad:
-                    if datos['responsable_ej']:
-                        escribir_celda_segura(f'J{fila}', datos['responsable_ej'])
+                # Escribir datos del responsable
+                if resp_ej:
+                    escribir_celda_segura(f'J{current_row_pa}', resp_ej)
+                if tiempo > 0:
+                    escribir_celda_segura(f'L{current_row_pa}', tiempo)
+                if costo > 0:
+                    escribir_celda_segura(f'N{current_row_pa}', costo)
+                if fecha_inicio:
+                    escribir_celda_segura(f'P{current_row_pa}', formatear_fecha(fecha_inicio))
+                if fecha_fin:
+                    escribir_celda_segura(f'R{current_row_pa}', formatear_fecha(fecha_fin))
+                if resp_seg:
+                    escribir_celda_segura(f'T{current_row_pa}', resp_seg)
+                if fecha_seg:
+                    escribir_celda_segura(f'V{current_row_pa}', formatear_fecha(fecha_seg))
+                if estado:
+                    escribir_celda_segura(f'W{current_row_pa}', estado)
+                if horas_seg > 0:
+                    escribir_celda_segura(f'X{current_row_pa}', horas_seg)
+                if costo_seg > 0:
+                    escribir_celda_segura(f'Y{current_row_pa}', costo_seg)
+                if evidencia_resp:
+                    escribir_celda_segura(f'Z{current_row_pa}', evidencia_resp)
+                
+                current_row_pa += 1
+            
+            # Guardar fila final de esta actividad
+            end_row_pa = current_row_pa - 1
+            info['end_row'] = end_row_pa
+            
+            # Combinar celdas de Actividad si hay múltiples responsables
+            if num_responsables_pa > 1 and start_row_pa <= end_row_pa:
+                try:
+                    # Primero deshacer combinaciones horizontales existentes en el rango
+                    for row in range(start_row_pa, end_row_pa + 1):
                         try:
-                            sheet.merge_cells(f'J{fila}:K{fila}')
-                        except: pass
+                            if f'E{row}:I{row}' in [str(mc) for mc in sheet.merged_cells.ranges]:
+                                sheet.unmerge_cells(f'E{row}:I{row}')
+                        except:
+                            pass
                     
-                    if datos['tiempo'] > 0:
-                        escribir_celda_segura(f'L{fila}', datos['tiempo'])
-                        try:
-                            sheet.merge_cells(f'L{fila}:M{fila}')
-                        except: pass
+                    # Combinar Actividad (E-I) vertical y horizontalmente
+                    if actividad:
+                        sheet.merge_cells(f'E{start_row_pa}:I{end_row_pa}')
+                        sheet[f'E{start_row_pa}'].alignment = openpyxl.styles.Alignment(
+                            horizontal='left',
+                            vertical='center',
+                            wrap_text=True
+                        )
                     
-                    if datos['costo'] > 0:
-                        escribir_celda_segura(f'N{fila}', datos['costo'])
-                        try:
-                            sheet.merge_cells(f'N{fila}:O{fila}')
-                        except: pass
+                    # NO combinar Evidencia (Z) ya que cada responsable tiene su propia evidencia
                     
-                    if datos['fecha_inicio']:
-                        escribir_celda_segura(f'P{fila}', formatear_fecha(datos['fecha_inicio']))
-                        try:
-                            sheet.merge_cells(f'P{fila}:Q{fila}')
-                        except: pass
-                    
-                    if datos['fecha_fin']:
-                        escribir_celda_segura(f'R{fila}', formatear_fecha(datos['fecha_fin']))
-                        try:
-                            sheet.merge_cells(f'R{fila}:S{fila}')
-                        except: pass
-                    
-                    if datos['responsable_seg']:
-                        escribir_celda_segura(f'T{fila}', datos['responsable_seg'])
-                        try:
-                            sheet.merge_cells(f'T{fila}:U{fila}')
-                        except: pass
-                    
-                    if datos['fecha_seguimiento']:
-                        escribir_celda_segura(f'V{fila}', formatear_fecha(datos['fecha_seguimiento']))
-                    
-                    if datos['estado'] and datos['estado'] != "":
-                        escribir_celda_segura(f'W{fila}', datos['estado'])
-                    
-                    if datos['costo_seguimiento'] > 0:
-                        escribir_celda_segura(f'X{fila}', datos['costo_seguimiento'])
-                        try:
-                            sheet.merge_cells(f'X{fila}:Y{fila}')
-                        except: pass
-                    
-                    if datos['evidencia']:
-                        escribir_celda_segura(f'Z{fila}', datos['evidencia'])
+                except Exception as e:
+                    print(f"Error combinando celdas de actividad: {e}")
         
-        # Ocultar filas vacías restantes
-        if fila_actual <= 72:
-            for fila in range(fila_actual, 73):
-                sheet.row_dimensions[fila].hidden = True
+        # Ahora combinar celdas de Causas para actividades que comparten las mismas causas
+        for causas_key, indices_actividades in actividades_por_causas.items():
+            if not causas_key or len(indices_actividades) == 0:
+                continue
+            
+            # Obtener fila inicial y final del grupo de actividades con las mismas causas
+            primera_actividad = actividades_info[indices_actividades[0]]
+            ultima_actividad = actividades_info[indices_actividades[-1]]
+            
+            inicio_grupo = primera_actividad['start_row']
+            fin_grupo = ultima_actividad['end_row']
+            
+            if inicio_grupo and fin_grupo and inicio_grupo <= fin_grupo:
+                try:
+                    # Deshacer combinaciones existentes en el rango de causas
+                    for row in range(inicio_grupo, fin_grupo + 1):
+                        try:
+                            if f'A{row}:D{row}' in [str(mc) for mc in sheet.merged_cells.ranges]:
+                                sheet.unmerge_cells(f'A{row}:D{row}')
+                        except:
+                            pass
+                    
+                    # Combinar Causas (A-D) para todo el grupo
+                    if primera_actividad['causas']:
+                        sheet.merge_cells(f'A{inicio_grupo}:D{fin_grupo}')
+                        sheet[f'A{inicio_grupo}'].alignment = openpyxl.styles.Alignment(
+                            horizontal='left',
+                            vertical='center',
+                            wrap_text=True
+                        )
+                except Exception as e:
+                    print(f"Error combinando celdas de causas: {e}")
+        
+        # Ocultar filas no utilizadas
+        for row in range(current_row_pa, max_row_pa + 1):
+            sheet.row_dimensions[row].hidden = True
         
         # QUINTA SECCIÓN: COSTOS ASOCIADOS (Filas 86 y 89)
         costo_correccion = convertir_a_numero(st.session_state.get('costo_correccion', 0))
