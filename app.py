@@ -647,6 +647,80 @@ def crear_nueva_acr():
         key="descripcion_situacion"
     )
     
+    # Lista de cargos para responsables
+    LISTA_RESPONSABLES = [
+        "",
+        "Director General",
+        "Director de operaciones",
+        "Gerente de Nomina y ADP",
+        "Gerente Comercial",
+        "Lider de Administración de personal",
+        "Lider de Gestión Humana",
+        "Lider de Employer of Record Colombia",
+        "Lider Outsourcing de Tesoreria",
+        "Profesional de calidad",
+        "Profesional de Nomina",
+        "Profesional de Employer of Record Sucursales",
+        "Analista Administrativo y financiero",
+        "Analista de Nómina",
+        "Analista Administración de personal",
+        "Analista de EoR",
+        "Tecnico de Automatización",
+        "Asistente Administrativo y Financiero",
+        "Asistente Comercial",
+        "Asistente de Comunicación y Marketing",
+        "Asistente de Nómina",
+        "Asistente Administración de Personal",
+        "Asistente de EoR",
+        "Asistente de tesorería",
+        "Auxiliar de nomina"
+    ]
+    
+    # Función para calcular el costo por hora según el cargo
+    def calcular_costo_por_hora(cargo):
+        """Retorna el costo por hora según el cargo del responsable"""
+        if not cargo:
+            return 0
+        
+        # Salarios mensuales
+        salarios = {
+            # Directores: $19,217,000
+            "Director General": 19217000,
+            "Director de operaciones": 19217000,
+            # Gerentes: $8,000,000
+            "Gerente de Nomina y ADP": 8000000,
+            "Gerente Comercial": 8000000,
+            # Líderes: $6,158,000
+            "Lider de Administración de personal": 6158000,
+            "Lider de Gestión Humana": 6158000,
+            "Lider de Employer of Record Colombia": 6158000,
+            "Lider Outsourcing de Tesoreria": 6158000,
+            # Profesionales: $5,119,000
+            "Profesional de calidad": 5119000,
+            "Profesional de Nomina": 5119000,
+            "Profesional de Employer of Record Sucursales": 5119000,
+            # Analistas y Técnico: $4,183,000
+            "Analista Administrativo y financiero": 4183000,
+            "Analista de Nómina": 4183000,
+            "Analista Administración de personal": 4183000,
+            "Analista de EoR": 4183000,
+            "Tecnico de Automatización": 4183000,
+            # Asistentes: $3,335,000
+            "Asistente Administrativo y Financiero": 3335000,
+            "Asistente Comercial": 3335000,
+            "Asistente de Comunicación y Marketing": 3335000,
+            "Asistente de Nómina": 3335000,
+            "Asistente Administración de Personal": 3335000,
+            "Asistente de EoR": 3335000,
+            "Asistente de tesorería": 3335000,
+            # Auxiliar: $2,627,000
+            "Auxiliar de nomina": 2627000
+        }
+        
+        salario_mensual = salarios.get(cargo, 0)
+        # Costo por hora = salario mensual / 180
+        return salario_mensual / 180 if salario_mensual > 0 else 0
+    
     # SEGUNDA SECCIÓN: CORRECCIÓN
     st.markdown("### 🔧 CORRECCIÓN (No aplica para riesgos)")
     st.markdown('<p style="font-size: 1rem; font-weight: 400; color: #cbd5e1; margin-top: 0.5rem;">Actividades inmediatas realizadas para subsanar lo ocurrido</p>', unsafe_allow_html=True)
@@ -690,10 +764,10 @@ def crear_nueva_acr():
             col_r1, col_r2, col_r3, col_r4, col_r5 = st.columns([2, 1, 1, 1, 1])
             
             with col_r1:
-                st.text_input(f"Responsable {j+1}", key=f"corr_responsable_{i}_{j}", placeholder="Nombre del responsable...", label_visibility="collapsed")
+                responsable = st.selectbox(f"Responsable {j+1}", options=LISTA_RESPONSABLES, key=f"corr_responsable_{i}_{j}", label_visibility="collapsed")
             
             with col_r2:
-                st.number_input(f"Tiempo {j+1}", min_value=0.0, step=0.5, key=f"corr_tiempo_{i}_{j}", label_visibility="collapsed")
+                horas = st.number_input(f"Tiempo {j+1}", min_value=0.0, step=0.5, key=f"corr_tiempo_{i}_{j}", label_visibility="collapsed")
             
             with col_r3:
                 st.date_input(f"Fecha Inicio {j+1}", value=None, key=f"corr_fecha_inicio_{i}_{j}", label_visibility="collapsed")
@@ -702,7 +776,23 @@ def crear_nueva_acr():
                 st.date_input(f"Fecha Fin {j+1}", value=None, key=f"corr_fecha_fin_{i}_{j}", label_visibility="collapsed")
             
             with col_r5:
-                st.text_input(f"Costo {j+1}", key=f"corr_costo_{i}_{j}", placeholder="Ej: 40000", label_visibility="collapsed")
+                # Calcular costo automáticamente
+                if responsable and horas > 0:
+                    costo_hora = calcular_costo_por_hora(responsable)
+                    costo_total = costo_hora * horas
+                    costo_formateado = f"${int(costo_total):,}"
+                    # Guardar el costo calculado en session_state para usarlo en Excel
+                    st.session_state[f"corr_costo_{i}_{j}"] = str(int(costo_total))
+                else:
+                    costo_formateado = "-"
+                    st.session_state[f"corr_costo_{i}_{j}"] = ""
+                
+                # Mostrar el costo calculado con un fondo gris
+                st.markdown(
+                    f'<div style="padding: 6px 12px; background-color: #1e293b; border-radius: 4px; '
+                    f'border: 1px solid #334155; text-align: right; height: 38px; line-height: 26px;">{costo_formateado}</div>',
+                    unsafe_allow_html=True
+                )
         
         # Botones para agregar/quitar responsable a esta actividad
         col_resp_btn1, col_resp_btn2 = st.columns(2)
@@ -755,14 +845,20 @@ def crear_nueva_acr():
         5. **Implemente acciones correctivas**: Enfocadas en la causa raíz, no en los síntomas
         
         **Ejemplo práctico:**
-        - **Problema**: El cliente canceló el contrato
-        - **¿Por qué 1?** Hubo errores repetidos en la nómina
-        - **¿Por qué 2?** No se verificaron los datos antes de enviar
-        - **¿Por qué 3?** No existe un proceso de doble verificación
-        - **¿Por qué 4?** No hay puntos de control definidos en el procedimiento
-        - **¿Por qué 5?** No se han actualizado los procesos con las lecciones aprendidas
         
-        **Causa Raíz Identificada**: Falta de mejora continua en los procesos operativos
+        Durante los meses de enero a marzo de 2025, se presentaron errores recurrentes en la liquidación de nómina del cliente Empresa XYZ, específicamente en valores de horas extras y recargos nocturnos.
+        
+        Los archivos fueron enviados al cliente sin validación final, generando tres reprocesos consecutivos, retrasos en los pagos y múltiples reclamaciones formales.
+        
+        Como consecuencia, el cliente manifestó pérdida de confianza en el servicio y decidió cancelar el contrato en marzo de 2025.
+        
+        - **¿Por qué 1?** Porque se enviaron archivos de nómina con errores en los cálculos.
+        - **¿Por qué 2?** Porque los datos liquidados no fueron verificados antes del envío al cliente.
+        - **¿Por qué 3?** Porque no existe una actividad obligatoria de doble verificación dentro del proceso operativo.
+        - **¿Por qué 4?** Porque el procedimiento documentado de nómina no define puntos de control, responsables ni checklist de validación.
+        - **¿Por qué 5?** (Causa raíz) Porque los procedimientos no han sido actualizados con base en incidentes anteriores ni en lecciones aprendidas del servicio.
+        
+        **Causa Raíz Identificada**: Falta de actualización y mejora continua de los procedimientos operativos con base en incidentes y lecciones aprendidas.
         """)
     
     st.markdown("")
@@ -992,13 +1088,27 @@ def crear_nueva_acr():
             col_r1, col_r2, col_r3, col_r4, col_r5, col_r6, col_r7, col_r8, col_r9, col_r10 = st.columns([1.5, 1, 1, 1, 1, 1.5, 1, 1, 0.8, 0.8])
             
             with col_r1:
-                st.text_input(f"Resp. Ej. {j+1}", key=f"pa_resp_ej_nueva_{i}_{j}", placeholder="Responsable...", label_visibility="collapsed")
+                resp_ej = st.selectbox(f"Resp. Ej. {j+1}", options=LISTA_RESPONSABLES, key=f"pa_resp_ej_nueva_{i}_{j}", label_visibility="collapsed")
             
             with col_r2:
-                st.number_input(f"Tiempo {j+1}", min_value=0.0, step=0.5, key=f"pa_tiempo_nueva_{i}_{j}", label_visibility="collapsed")
+                tiempo_ej = st.number_input(f"Tiempo {j+1}", min_value=0.0, step=0.5, key=f"pa_tiempo_nueva_{i}_{j}", label_visibility="collapsed")
             
             with col_r3:
-                st.text_input(f"Costo {j+1}", key=f"pa_costo_nueva_{i}_{j}", placeholder="40000", label_visibility="collapsed")
+                # Calcular costo de ejecución automáticamente
+                if resp_ej and tiempo_ej > 0:
+                    costo_hora_ej = calcular_costo_por_hora(resp_ej)
+                    costo_total_ej = costo_hora_ej * tiempo_ej
+                    costo_ej_formateado = f"${int(costo_total_ej):,}"
+                    st.session_state[f"pa_costo_nueva_{i}_{j}"] = str(int(costo_total_ej))
+                else:
+                    costo_ej_formateado = "-"
+                    st.session_state[f"pa_costo_nueva_{i}_{j}"] = ""
+                
+                st.markdown(
+                    f'<div style="padding: 6px 12px; background-color: #1e293b; border-radius: 4px; '
+                    f'border: 1px solid #334155; text-align: right; height: 38px; line-height: 26px;">{costo_ej_formateado}</div>',
+                    unsafe_allow_html=True
+                )
             
             with col_r4:
                 st.date_input(f"F. Inicio {j+1}", value=None, key=f"pa_fecha_inicio_nueva_{i}_{j}", label_visibility="collapsed")
@@ -1007,7 +1117,7 @@ def crear_nueva_acr():
                 st.date_input(f"F. Fin {j+1}", value=None, key=f"pa_fecha_fin_nueva_{i}_{j}", label_visibility="collapsed")
             
             with col_r6:
-                st.text_input(f"Resp. Seg. {j+1}", key=f"pa_resp_seg_nueva_{i}_{j}", placeholder="Responsable...", label_visibility="collapsed")
+                resp_seg = st.selectbox(f"Resp. Seg. {j+1}", options=LISTA_RESPONSABLES, key=f"pa_resp_seg_nueva_{i}_{j}", label_visibility="collapsed")
             
             with col_r7:
                 st.date_input(f"F. Seg. {j+1}", value=None, key=f"pa_fecha_seg_nueva_{i}_{j}", label_visibility="collapsed")
@@ -1016,10 +1126,24 @@ def crear_nueva_acr():
                 st.selectbox(f"Estado {j+1}", options=["", "Abierta", "Cerrada", "Parcial"], key=f"pa_estado_nueva_{i}_{j}", label_visibility="collapsed")
             
             with col_r9:
-                st.number_input(f"Horas Seg. {j+1}", min_value=0.0, step=0.5, key=f"pa_horas_seg_nueva_{i}_{j}", label_visibility="collapsed")
+                horas_seg = st.number_input(f"Horas Seg. {j+1}", min_value=0.0, step=0.5, key=f"pa_horas_seg_nueva_{i}_{j}", label_visibility="collapsed")
             
             with col_r10:
-                st.text_input(f"Costo Seg. {j+1}", key=f"pa_costo_seg_nueva_{i}_{j}", placeholder="40000", label_visibility="collapsed")
+                # Calcular costo de seguimiento automáticamente
+                if resp_seg and horas_seg > 0:
+                    costo_hora_seg = calcular_costo_por_hora(resp_seg)
+                    costo_total_seg = costo_hora_seg * horas_seg
+                    costo_seg_formateado = f"${int(costo_total_seg):,}"
+                    st.session_state[f"pa_costo_seg_nueva_{i}_{j}"] = str(int(costo_total_seg))
+                else:
+                    costo_seg_formateado = "-"
+                    st.session_state[f"pa_costo_seg_nueva_{i}_{j}"] = ""
+                
+                st.markdown(
+                    f'<div style="padding: 6px 12px; background-color: #1e293b; border-radius: 4px; '
+                    f'border: 1px solid #334155; text-align: right; height: 38px; line-height: 26px;">{costo_seg_formateado}</div>',
+                    unsafe_allow_html=True
+                )
             
             # Evidencia (campo amplio para cada responsable)
             st.text_input(
@@ -1067,13 +1191,60 @@ def crear_nueva_acr():
     st.markdown("**Se deben incluir los costos que sepan que se incurrieron con la ACR.**")
     st.markdown("")
     
+    # Calcular costos automáticamente desde las secciones anteriores
+    # 1. Costos de corrección: suma de todos los costos de CORRECCIÓN
+    total_costo_correccion = 0
+    num_actividades_corr = st.session_state.get('num_actividades_corr', 3)
+    for i in range(num_actividades_corr):
+        num_responsables = st.session_state.get(f'num_responsables_corr_{i}', 1)
+        for j in range(num_responsables):
+            costo_str = st.session_state.get(f'corr_costo_{i}_{j}', '')
+            if costo_str and costo_str.strip():
+                try:
+                    total_costo_correccion += int(costo_str)
+                except:
+                    pass
+    
+    # 2. Costos de seguimiento: suma de todos los "Costo Seg." de PLAN DE ACCIÓN
+    total_costo_seguimiento = 0
+    num_actividades_pa = st.session_state.get('num_actividades_pa', 1)
+    for i in range(num_actividades_pa):
+        num_responsables = st.session_state.get(f'num_responsables_pa_{i}', 1)
+        for j in range(num_responsables):
+            costo_seg_str = st.session_state.get(f'pa_costo_seg_nueva_{i}_{j}', '')
+            if costo_seg_str and costo_seg_str.strip():
+                try:
+                    total_costo_seguimiento += int(costo_seg_str)
+                except:
+                    pass
+    
+    # 3. Costos de acciones correctivas: suma de todos los "Costo" de PLAN DE ACCIÓN
+    total_costo_acciones = 0
+    for i in range(num_actividades_pa):
+        num_responsables = st.session_state.get(f'num_responsables_pa_{i}', 1)
+        for j in range(num_responsables):
+            costo_str = st.session_state.get(f'pa_costo_nueva_{i}_{j}', '')
+            if costo_str and costo_str.strip():
+                try:
+                    total_costo_acciones += int(costo_str)
+                except:
+                    pass
+    
+    # Guardar en session_state para usar en Excel
+    st.session_state['costo_correccion'] = str(total_costo_correccion) if total_costo_correccion > 0 else ""
+    st.session_state['costo_seguimiento'] = str(total_costo_seguimiento) if total_costo_seguimiento > 0 else ""
+    st.session_state['costo_acciones'] = str(total_costo_acciones) if total_costo_acciones > 0 else ""
+    
     col_costo1, col_costo2 = st.columns(2)
     
     with col_costo1:
-        costo_correccion = st.text_input(
-            "Costos de la corrección (Reproceso Interno)",
-            key="costo_correccion",
-            placeholder="Ej: 40000"
+        # Campo calculado automáticamente
+        st.markdown("**Costos de la corrección (Reproceso Interno)**")
+        costo_corr_formateado = f"${total_costo_correccion:,}" if total_costo_correccion > 0 else "$0"
+        st.markdown(
+            f'<div style="padding: 8px 12px; background-color: #1e293b; border-radius: 4px; '
+            f'border: 1px solid #334155; text-align: right; margin-bottom: 16px; font-size: 1.1rem; font-weight: 500;">{costo_corr_formateado}</div>',
+            unsafe_allow_html=True
         )
         
         costo_reputacional = st.text_input(
@@ -1082,10 +1253,13 @@ def crear_nueva_acr():
             placeholder="Ej: 40000"
         )
         
-        costo_acciones = st.text_input(
-            "Costos de las acciones correctivas",
-            key="costo_acciones",
-            placeholder="Ej: 40000"
+        # Campo calculado automáticamente
+        st.markdown("**Costos de las acciones correctivas**")
+        costo_acc_formateado = f"${total_costo_acciones:,}" if total_costo_acciones > 0 else "$0"
+        st.markdown(
+            f'<div style="padding: 8px 12px; background-color: #1e293b; border-radius: 4px; '
+            f'border: 1px solid #334155; text-align: right; margin-bottom: 16px; font-size: 1.1rem; font-weight: 500;">{costo_acc_formateado}</div>',
+            unsafe_allow_html=True
         )
         
         multas_sanciones = st.text_input(
@@ -1095,10 +1269,13 @@ def crear_nueva_acr():
         )
     
     with col_costo2:
-        costo_seguimiento = st.text_input(
-            "Costos de seguimiento",
-            key="costo_seguimiento",
-            placeholder="Ej: 40000"
+        # Campo calculado automáticamente
+        st.markdown("**Costos de seguimiento**")
+        costo_seg_formateado = f"${total_costo_seguimiento:,}" if total_costo_seguimiento > 0 else "$0"
+        st.markdown(
+            f'<div style="padding: 8px 12px; background-color: #1e293b; border-radius: 4px; '
+            f'border: 1px solid #334155; text-align: right; margin-bottom: 16px; font-size: 1.1rem; font-weight: 500;">{costo_seg_formateado}</div>',
+            unsafe_allow_html=True
         )
         
         otros_costos_internos = st.text_input(
