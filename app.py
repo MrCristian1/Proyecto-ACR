@@ -660,9 +660,9 @@ def crear_nueva_acr():
         "Lider de Gestión Humana",
         "Lider de Employer of Record Colombia",
         "Lider Outsourcing de Tesoreria",
-        "Profesional de calidad",
+        "Profesional SGI",
         "Profesional de Nomina",
-        "Profesional de Employer of Record Sucursales",
+        "Profesional Back office Sucursales",
         "Analista Administrativo y financiero",
         "Analista de Nómina",
         "Analista Administración de personal",
@@ -698,9 +698,9 @@ def crear_nueva_acr():
             "Lider de Employer of Record Colombia": 6158000,
             "Lider Outsourcing de Tesoreria": 6158000,
             # Profesionales: $5,119,000
-            "Profesional de calidad": 5119000,
+            "Profesional SGI": 5119000,
             "Profesional de Nomina": 5119000,
-            "Profesional de Employer of Record Sucursales": 5119000,
+            "Profesional Back office Sucursales": 5119000,
             # Analistas y Técnico: $4,183,000
             "Analista Administrativo y financiero": 4183000,
             "Analista de Nómina": 4183000,
