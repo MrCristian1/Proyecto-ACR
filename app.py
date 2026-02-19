@@ -104,7 +104,7 @@ st.set_page_config(
     page_title="Solutions & Payroll - ACR Manager",
     page_icon="syp logo.png",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
 # CSS personalizado para interfaz empresarial
@@ -119,15 +119,15 @@ def load_custom_css():
         /* Header principal */
         /* Header principal mejorado */
         .header-container {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            background: linear-gradient(175deg, #ffffff 0%, #f1f5f9 50%, #e2e8f0 100%);
             padding: 3rem 2rem;
             border-radius: 16px;
             margin-bottom: 2.5rem;
             box-shadow: 
-                0 12px 40px 0 rgba(30, 58, 138, 0.4),
-                0 4px 12px 0 rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            border-top: 8px solid #2563eb;
+                0 12px 40px 0 rgba(59, 130, 246, 0.2),
+                0 4px 12px 0 rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            border-top: 8px solid #32508f;
             border-image: none;
             position: relative;
             overflow: hidden;
@@ -174,9 +174,9 @@ def load_custom_css():
         .header-container:hover {
             transform: translateY(-2px);
             box-shadow: 
-                0 16px 50px 0 rgba(30, 58, 138, 0.5),
-                0 6px 16px 0 rgba(0, 0, 0, 0.35),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+                0 16px 50px 0 rgba(59, 130, 246, 0.25),
+                0 6px 16px 0 rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
         }
 
         /* Para el contenido dentro del header */
@@ -188,7 +188,7 @@ def load_custom_css():
 
         /* Títulos dentro del header */
         .header-title {
-            color: #fff;
+            color: #1e293b;
             font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 1rem;
@@ -196,16 +196,15 @@ def load_custom_css():
             -webkit-background-clip: initial;
             -webkit-text-fill-color: initial;
             background-clip: initial;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .header-subtitle {
-            color: #cbd5e1;
+            color: #475569;
             font-size: 1.2rem;
             font-weight: 400;
             line-height: 1.6;
             max-width: 600px;
-            margin: 0 auto;
         }
         
         .company-logo {
@@ -234,17 +233,17 @@ def load_custom_css():
         
         /* Sidebar mejorado y moderno */
         [data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
         }
         
         [data-testid="stSidebar"] .element-container {
-            color: #e2e8f0;
+            color: #1e293b;
         }
         
         /* Títulos del sidebar */
         [data-testid="stSidebar"] h3 {
-            color: #ffffff;
+            color: #1e293b;
             font-weight: 600;
             font-size: 1.1rem;
             margin-bottom: 1rem;
@@ -256,16 +255,16 @@ def load_custom_css():
         [data-testid="stSidebar"] hr {
             border: none;
             height: 1px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.1);
             margin: 1.5rem 0;
         }
         
         /* Radio buttons del sidebar */
         [data-testid="stSidebar"] .stRadio > div {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(0, 0, 0, 0.02);
             border-radius: 8px;
             padding: 0.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
         
         /* Info boxes del sidebar */
@@ -273,21 +272,21 @@ def load_custom_css():
             background: rgba(37, 99, 235, 0.1);
             border: 1px solid rgba(37, 99, 235, 0.3);
             border-radius: 8px;
-            color: #cbd5e1;
+            color: #475569;
         }
         
         /* Expanders del sidebar */
         [data-testid="stSidebar"] .streamlit-expanderHeader {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.03);
             border-radius: 6px;
-            color: #f1f5f9;
+            color: #1e293b;
             font-weight: 500;
         }
         
         [data-testid="stSidebar"] .streamlit-expanderContent {
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(0, 0, 0, 0.02);
             border-radius: 0 0 6px 6px;
-            color: #cbd5e1;
+            color: #475569;
         }
         
         /* Tarjetas de formulario */
@@ -299,48 +298,51 @@ def load_custom_css():
         
         /* Botones minimalistas */
         .stButton > button {
-            background: rgba(255, 255, 255, 0.05);
-            color: #e2e8f0;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #ffffff;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
             border-radius: 6px;
             padding: 0.6rem 1.5rem;
             font-weight: 500;
             font-size: 0.9rem;
             transition: all 0.2s ease;
-            box-shadow: none;
-            backdrop-filter: blur(10px);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
         
         .stButton > button:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
-            color: #ffffff;
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            color: #0f172a;
             transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         
         .stButton > button:active {
             transform: translateY(0px);
-            background: rgba(255, 255, 255, 0.15);
+            background: #e2e8f0;
         }
         
         /* Botones de agregar/quitar con iconos azules */
         .stButton > button[aria-label*="Agregar"], 
         .stButton > button:has(div:contains("Agregar")),
         .stButton > button:has(div:contains("➕")) {
-            color: #3b82f6;
+            color: #2563eb;
+            font-weight: 600;
         }
         
         .stButton > button[aria-label*="Quitar"], 
         .stButton > button:has(div:contains("Quitar")),
         .stButton > button:has(div:contains("➖")) {
-            color: #3b82f6;
+            color: #dc2626;
+            font-weight: 600;
         }
         
         /* Info boxes */
         .stAlert {
             border-radius: 8px;
             border-left: 4px solid #3b82f6;
+            background-color: #eff6ff;
+            color: #1e293b;
         }
         
         /* Secciones */
@@ -436,7 +438,7 @@ def main():
             st.write("1. Completa el formulario con los datos del problema\n2. Genera análisis con IA o manualmente\n3. Descarga el reporte en Excel")
         st.markdown("---")
         st.markdown("### 📌 Información")
-        st.markdown('<span style="color: #fff; font-weight: 500;">Versión: 2.0<br>Última actualización: Oct 2025</span>', unsafe_allow_html=True)
+        st.markdown('<span style="color: #1e293b; font-weight: 500;">Versión: 2.0<br>Última actualización: Febrero 2026</span>', unsafe_allow_html=True)
     
     # Contenido principal
     if opcion == "🆕 Crear Nueva ACR":
@@ -723,7 +725,7 @@ def crear_nueva_acr():
     
     # SEGUNDA SECCIÓN: CORRECCIÓN
     st.markdown("### 🔧 CORRECCIÓN (No aplica para riesgos)")
-    st.markdown('<p style="font-size: 1rem; font-weight: 400; color: #cbd5e1; margin-top: 0.5rem;">Actividades inmediatas realizadas para subsanar lo ocurrido</p>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size: 1rem; font-weight: 400; color: #475569; margin-top: 0.5rem;">Actividades inmediatas realizadas para subsanar lo ocurrido</p>', unsafe_allow_html=True)
     st.markdown("---")
     
     # Inicializar session state para actividades de corrección
@@ -749,36 +751,41 @@ def crear_nueva_acr():
         for j in range(st.session_state[f'num_responsables_corr_{i}']):
             # Mostrar títulos solo en el primer responsable
             if j == 0:
-                col_h1, col_h2, col_h3, col_h4, col_h5 = st.columns([2, 1, 1, 1, 1])
+                col_h1, col_h2, col_h3, col_h4, col_h5, col_h6 = st.columns([1.5, 1.5, 1, 1, 1, 1])
                 with col_h1:
-                    st.markdown("**Responsable**")
+                    st.markdown("**Nombre Responsable**")
                 with col_h2:
-                    st.markdown("**Tiempo (Horas)**")
+                    st.markdown("**Cargo Responsable**")
                 with col_h3:
-                    st.markdown("**Fecha Inicio**")
+                    st.markdown("**Tiempo (Horas)**")
                 with col_h4:
-                    st.markdown("**Fecha Fin**")
+                    st.markdown("**Fecha Inicio**")
                 with col_h5:
+                    st.markdown("**Fecha Fin**")
+                with col_h6:
                     st.markdown("**Costo**")
             
-            col_r1, col_r2, col_r3, col_r4, col_r5 = st.columns([2, 1, 1, 1, 1])
+            col_r1, col_r2, col_r3, col_r4, col_r5, col_r6 = st.columns([1.5, 1.5, 1, 1, 1, 1])
             
             with col_r1:
-                responsable = st.selectbox(f"Responsable {j+1}", options=LISTA_RESPONSABLES, key=f"corr_responsable_{i}_{j}", label_visibility="collapsed")
+                nombre_responsable = st.text_input(f"Nombre Responsable {j+1}", key=f"corr_nombre_responsable_{i}_{j}", placeholder="Nombre del responsable", label_visibility="collapsed")
             
             with col_r2:
-                horas = st.number_input(f"Tiempo {j+1}", min_value=0.0, step=0.5, key=f"corr_tiempo_{i}_{j}", label_visibility="collapsed")
+                cargo_responsable = st.selectbox(f"Cargo Responsable {j+1}", options=LISTA_RESPONSABLES, key=f"corr_responsable_{i}_{j}", label_visibility="collapsed")
             
             with col_r3:
-                st.date_input(f"Fecha Inicio {j+1}", value=None, key=f"corr_fecha_inicio_{i}_{j}", label_visibility="collapsed")
+                horas = st.number_input(f"Tiempo {j+1}", min_value=0.0, step=0.5, key=f"corr_tiempo_{i}_{j}", label_visibility="collapsed")
             
             with col_r4:
-                st.date_input(f"Fecha Fin {j+1}", value=None, key=f"corr_fecha_fin_{i}_{j}", label_visibility="collapsed")
+                st.date_input(f"Fecha Inicio {j+1}", value=None, key=f"corr_fecha_inicio_{i}_{j}", label_visibility="collapsed")
             
             with col_r5:
+                st.date_input(f"Fecha Fin {j+1}", value=None, key=f"corr_fecha_fin_{i}_{j}", label_visibility="collapsed")
+            
+            with col_r6:
                 # Calcular costo automáticamente
-                if responsable and horas > 0:
-                    costo_hora = calcular_costo_por_hora(responsable)
+                if cargo_responsable and horas > 0:
+                    costo_hora = calcular_costo_por_hora(cargo_responsable)
                     costo_total = costo_hora * horas
                     costo_formateado = f"${int(costo_total):,}"
                     # Guardar el costo calculado en session_state para usarlo en Excel
@@ -789,8 +796,8 @@ def crear_nueva_acr():
                 
                 # Mostrar el costo calculado con un fondo gris
                 st.markdown(
-                    f'<div style="padding: 6px 12px; background-color: #1e293b; border-radius: 4px; '
-                    f'border: 1px solid #334155; text-align: right; height: 38px; line-height: 26px;">{costo_formateado}</div>',
+                    f'<div style="padding: 6px 12px; background-color: #f1f5f9; border-radius: 4px; '
+                    f'border: 1px solid #cbd5e1; text-align: right; height: 38px; line-height: 26px;">{costo_formateado}</div>',
                     unsafe_allow_html=True
                 )
         
@@ -1061,39 +1068,34 @@ def crear_nueva_acr():
         
         # Responsables de esta actividad
         for j in range(st.session_state[f'num_responsables_pa_{i}']):
-            # Mostrar títulos solo en el primer responsable
-            if j == 0:
-                col_h1, col_h2, col_h3, col_h4, col_h5, col_h6, col_h7, col_h8, col_h9, col_h10 = st.columns([1.5, 1, 1, 1, 1, 1.5, 1, 1, 0.8, 0.8])
-                with col_h1:
-                    st.markdown("**Resp. Ejecución**")
-                with col_h2:
-                    st.markdown("**Tiempo (H)**")
-                with col_h3:
-                    st.markdown("**Costo**")
-                with col_h4:
-                    st.markdown("**F. Inicio**")
-                with col_h5:
-                    st.markdown("**F. Fin**")
-                with col_h6:
-                    st.markdown("**Resp. Seguimiento**")
-                with col_h7:
-                    st.markdown("**F. Seg.**")
-                with col_h8:
-                    st.markdown("**Estado**")
-                with col_h9:
-                    st.markdown("**Horas Seg.**")
-                with col_h10:
-                    st.markdown("**Costo Seg.**")
+            # Primera fila de encabezados: Nombre Resp. Ejecución hasta F. Fin
+            col_h1, col_h2, col_h3, col_h4, col_h5, col_h6 = st.columns([1.5, 1.5, 1, 1, 1, 1])
+            with col_h1:
+                st.markdown("**Nombre Resp. Ejecución**")
+            with col_h2:
+                st.markdown("**Cargo Resp. Ejecución**")
+            with col_h3:
+                st.markdown("**Tiempo (H)**")
+            with col_h4:
+                st.markdown("**Costo**")
+            with col_h5:
+                st.markdown("**F. Inicio**")
+            with col_h6:
+                st.markdown("**F. Fin**")
             
-            col_r1, col_r2, col_r3, col_r4, col_r5, col_r6, col_r7, col_r8, col_r9, col_r10 = st.columns([1.5, 1, 1, 1, 1, 1.5, 1, 1, 0.8, 0.8])
+            # Primera fila de datos: Nombre Resp. Ejecución hasta F. Fin
+            col_r1, col_r2, col_r3, col_r4, col_r5, col_r6 = st.columns([1.5, 1.5, 1, 1, 1, 1])
             
             with col_r1:
-                resp_ej = st.selectbox(f"Resp. Ej. {j+1}", options=LISTA_RESPONSABLES, key=f"pa_resp_ej_nueva_{i}_{j}", label_visibility="collapsed")
+                st.text_input(f"Nombre Ej. {j+1}", key=f"pa_nombre_resp_ej_nueva_{i}_{j}", label_visibility="collapsed", placeholder="Nombre completo")
             
             with col_r2:
-                tiempo_ej = st.number_input(f"Tiempo {j+1}", min_value=0.0, step=0.5, key=f"pa_tiempo_nueva_{i}_{j}", label_visibility="collapsed")
+                resp_ej = st.selectbox(f"Cargo Ej. {j+1}", options=LISTA_RESPONSABLES, key=f"pa_resp_ej_nueva_{i}_{j}", label_visibility="collapsed")
             
             with col_r3:
+                tiempo_ej = st.number_input(f"Tiempo {j+1}", min_value=0.0, step=0.5, key=f"pa_tiempo_nueva_{i}_{j}", label_visibility="collapsed")
+            
+            with col_r4:
                 # Calcular costo de ejecución automáticamente
                 if resp_ej and tiempo_ej > 0:
                     costo_hora_ej = calcular_costo_por_hora(resp_ej)
@@ -1105,30 +1107,51 @@ def crear_nueva_acr():
                     st.session_state[f"pa_costo_nueva_{i}_{j}"] = ""
                 
                 st.markdown(
-                    f'<div style="padding: 6px 12px; background-color: #1e293b; border-radius: 4px; '
-                    f'border: 1px solid #334155; text-align: right; height: 38px; line-height: 26px;">{costo_ej_formateado}</div>',
+                    f'<div style="padding: 6px 12px; background-color: #f1f5f9; border-radius: 4px; '
+                    f'border: 1px solid #cbd5e1; text-align: right; height: 38px; line-height: 26px;">{costo_ej_formateado}</div>',
                     unsafe_allow_html=True
                 )
             
-            with col_r4:
+            with col_r5:
                 st.date_input(f"F. Inicio {j+1}", value=None, key=f"pa_fecha_inicio_nueva_{i}_{j}", label_visibility="collapsed")
             
-            with col_r5:
+            with col_r6:
                 st.date_input(f"F. Fin {j+1}", value=None, key=f"pa_fecha_fin_nueva_{i}_{j}", label_visibility="collapsed")
             
-            with col_r6:
-                resp_seg = st.selectbox(f"Resp. Seg. {j+1}", options=LISTA_RESPONSABLES, key=f"pa_resp_seg_nueva_{i}_{j}", label_visibility="collapsed")
+            # Segunda fila de encabezados: Nombre Resp. Seguimiento hasta Costo Seg.
+            col_h7, col_h8, col_h9, col_h10, col_h11, col_h12 = st.columns([1.5, 1.5, 1, 1, 1, 1])
+            with col_h7:
+                st.markdown("**Nombre Resp. Seguimiento**")
+            with col_h8:
+                st.markdown("**Cargo Resp. Seguimiento**")
+            with col_h9:
+                st.markdown("**F. Seg.**")
+            with col_h10:
+                st.markdown("**Estado**")
+            with col_h11:
+                st.markdown("**Horas Seg.**")
+            with col_h12:
+                st.markdown("**Costo Seg.**")
+            
+            # Segunda fila de datos: Nombre Resp. Seguimiento hasta Costo Seg.
+            col_r7, col_r8, col_r9, col_r10, col_r11, col_r12 = st.columns([1.5, 1.5, 1, 1, 1, 1])
             
             with col_r7:
-                st.date_input(f"F. Seg. {j+1}", value=None, key=f"pa_fecha_seg_nueva_{i}_{j}", label_visibility="collapsed")
+                st.text_input(f"Nombre Seg. {j+1}", key=f"pa_nombre_resp_seg_nueva_{i}_{j}", label_visibility="collapsed", placeholder="Nombre completo")
             
             with col_r8:
-                st.selectbox(f"Estado {j+1}", options=["", "Abierta", "Cerrada", "Parcial"], key=f"pa_estado_nueva_{i}_{j}", label_visibility="collapsed")
+                resp_seg = st.selectbox(f"Cargo Seg. {j+1}", options=LISTA_RESPONSABLES, key=f"pa_resp_seg_nueva_{i}_{j}", label_visibility="collapsed")
             
             with col_r9:
-                horas_seg = st.number_input(f"Horas Seg. {j+1}", min_value=0.0, step=0.5, key=f"pa_horas_seg_nueva_{i}_{j}", label_visibility="collapsed")
+                st.date_input(f"F. Seg. {j+1}", value=None, key=f"pa_fecha_seg_nueva_{i}_{j}", label_visibility="collapsed")
             
             with col_r10:
+                st.selectbox(f"Estado {j+1}", options=["", "Abierta", "Cerrada", "Parcial"], key=f"pa_estado_nueva_{i}_{j}", label_visibility="collapsed")
+            
+            with col_r11:
+                horas_seg = st.number_input(f"Horas Seg. {j+1}", min_value=0.0, step=0.5, key=f"pa_horas_seg_nueva_{i}_{j}", label_visibility="collapsed")
+            
+            with col_r12:
                 # Calcular costo de seguimiento automáticamente
                 if resp_seg and horas_seg > 0:
                     costo_hora_seg = calcular_costo_por_hora(resp_seg)
@@ -1140,8 +1163,8 @@ def crear_nueva_acr():
                     st.session_state[f"pa_costo_seg_nueva_{i}_{j}"] = ""
                 
                 st.markdown(
-                    f'<div style="padding: 6px 12px; background-color: #1e293b; border-radius: 4px; '
-                    f'border: 1px solid #334155; text-align: right; height: 38px; line-height: 26px;">{costo_seg_formateado}</div>',
+                    f'<div style="padding: 6px 12px; background-color: #f1f5f9; border-radius: 4px; '
+                    f'border: 1px solid #cbd5e1; text-align: right; height: 38px; line-height: 26px;">{costo_seg_formateado}</div>',
                     unsafe_allow_html=True
                 )
             
@@ -1240,60 +1263,81 @@ def crear_nueva_acr():
     with col_costo1:
         # Campo calculado automáticamente
         st.markdown("**Costos de la corrección (Reproceso Interno)**")
+        st.caption("Registrar los costos asociados a la corrección inmediata del hallazgo para restablecer la conformidad del proceso o servicio.")
         costo_corr_formateado = f"${total_costo_correccion:,}" if total_costo_correccion > 0 else "$0"
         st.markdown(
-            f'<div style="padding: 8px 12px; background-color: #1e293b; border-radius: 4px; '
-            f'border: 1px solid #334155; text-align: right; margin-bottom: 16px; font-size: 1.1rem; font-weight: 500;">{costo_corr_formateado}</div>',
+            f'<div style="padding: 6px 12px; background-color: #f1f5f9; border-radius: 4px; '
+            f'border: 1px solid #cbd5e1; text-align: right; margin-bottom: 16px; height: 38px; '
+            f'line-height: 26px; font-size: 1rem; font-weight: 500;">{costo_corr_formateado}</div>',
             unsafe_allow_html=True
         )
         
+        st.markdown("**Costo por pérdida de ingresos**")
+        st.caption("Se refiere al dinero que ya no se recibe por la perdida del cliente, disminución del alcance del contrato.")
         costo_reputacional = st.text_input(
-            "Costo daño reputacional (5-10% del valor del contrato con el cliente afectado)",
+            "Costo por pérdida de ingresos",
             key="costo_reputacional",
-            placeholder="Ej: 40000"
+            placeholder="Ej: 40000",
+            label_visibility="collapsed"
         )
         
         # Campo calculado automáticamente
         st.markdown("**Costos de las acciones correctivas**")
+        st.caption("Registrar los costos de las acciones implementadas para eliminar la causa raíz del problema y prevenir su recurrencia.")
         costo_acc_formateado = f"${total_costo_acciones:,}" if total_costo_acciones > 0 else "$0"
         st.markdown(
-            f'<div style="padding: 8px 12px; background-color: #1e293b; border-radius: 4px; '
-            f'border: 1px solid #334155; text-align: right; margin-bottom: 16px; font-size: 1.1rem; font-weight: 500;">{costo_acc_formateado}</div>',
+            f'<div style="padding: 6px 12px; background-color: #f1f5f9; border-radius: 4px; '
+            f'border: 1px solid #cbd5e1; text-align: right; margin-bottom: 16px; height: 38px; '
+            f'line-height: 26px; font-size: 1rem; font-weight: 500;">{costo_acc_formateado}</div>',
             unsafe_allow_html=True
         )
         
+        st.markdown("**Multas / Sanciones**")
+        st.caption("Registrar cuando se generen pagos obligatorios derivados de incumplimientos contractuales, legales o normativos asociados a la no conformidad.")
         multas_sanciones = st.text_input(
             "Multas / Sanciones",
             key="multas_sanciones",
-            placeholder="Ej: 40000"
+            placeholder="Ej: 40000",
+            label_visibility="collapsed"
         )
     
     with col_costo2:
         # Campo calculado automáticamente
         st.markdown("**Costos de seguimiento**")
+        st.caption("Registrar los costos asociados a las actividades de verificación y seguimiento de las acciones de corrección y correctivas implementadas para la gestión del hallazgo.")
         costo_seg_formateado = f"${total_costo_seguimiento:,}" if total_costo_seguimiento > 0 else "$0"
         st.markdown(
-            f'<div style="padding: 8px 12px; background-color: #1e293b; border-radius: 4px; '
-            f'border: 1px solid #334155; text-align: right; margin-bottom: 16px; font-size: 1.1rem; font-weight: 500;">{costo_seg_formateado}</div>',
+            f'<div style="padding: 6px 12px; background-color: #f1f5f9; border-radius: 4px; '
+            f'border: 1px solid #cbd5e1; text-align: right; margin-bottom: 16px; height: 38px; '
+            f'line-height: 26px; font-size: 1rem; font-weight: 500;">{costo_seg_formateado}</div>',
             unsafe_allow_html=True
         )
         
+        st.markdown("**Otros costos internos asociados a la NC**")
+        st.caption("Registrar cuando se requieran compras, herramientas, software, equipos o recursos adicionales no previstos inicialmente para atender la no conformidad.")
         otros_costos_internos = st.text_input(
-            "Otros costos internos asociados a la NC, no cuantificados",
+            "Otros costos internos asociados a la NC",
             key="otros_costos_internos",
-            placeholder="Ej: 40000"
+            placeholder="Ej: 40000",
+            label_visibility="collapsed"
         )
         
+        st.markdown("**Descuentos realizados al cliente**")
+        st.caption("Registrar los costos asociados a reducciones económicas otorgadas al cliente como compensación derivada de la no conformidad.")
         descuentos_cliente = st.text_input(
             "Descuentos realizados al cliente",
             key="descuentos_cliente",
-            placeholder="Ej: 40000"
+            placeholder="Ej: 40000",
+            label_visibility="collapsed"
         )
         
+        st.markdown("**Otros costos**")
+        st.caption("Registrar cualquier gasto adicional relacionado con la no conformidad que no corresponda a las categorías anteriores.")
         otros_costos = st.text_input(
             "Otros costos",
             key="otros_costos",
-            placeholder="Ej: 40000"
+            placeholder="Ej: 40000",
+            label_visibility="collapsed"
         )
     
     # Botones de acción
@@ -1484,7 +1528,7 @@ def mostrar_informacion_sistema():
         <div class="stat-card">
             <h3>📦 Versión</h3>
             <p><strong>2.0</strong></p>
-            <p>Última actualización: Oct 2025</p>
+            <p>Última actualización: Febrero 2026</p>
         </div>
         """, unsafe_allow_html=True)
     
@@ -1879,7 +1923,8 @@ def generar_excel_acr_completo():
                 if current_row > max_row:
                     break
                 
-                responsable = st.session_state.get(f'corr_responsable_{i}_{j}', '')
+                nombre_responsable = st.session_state.get(f'corr_nombre_responsable_{i}_{j}', '')
+                cargo_responsable = st.session_state.get(f'corr_responsable_{i}_{j}', '')
                 tiempo = st.session_state.get(f'corr_tiempo_{i}_{j}', 0)
                 fecha_inicio = st.session_state.get(f'corr_fecha_inicio_{i}_{j}', '')
                 fecha_fin = st.session_state.get(f'corr_fecha_fin_{i}_{j}', '')
@@ -1893,8 +1938,10 @@ def generar_excel_acr_completo():
                         escribir_celda_segura(f'J{current_row}', recursos)
                 
                 # Escribir datos del responsable
-                if responsable:
-                    escribir_celda_segura(f'M{current_row}', responsable)
+                if nombre_responsable:
+                    escribir_celda_segura(f'M{current_row}', nombre_responsable)
+                if cargo_responsable:
+                    escribir_celda_segura(f'N{current_row}', cargo_responsable)
                 if tiempo > 0:
                     escribir_celda_segura(f'O{current_row}', tiempo)
                 if fecha_inicio:
@@ -2041,11 +2088,13 @@ def generar_excel_acr_completo():
                     break
                 
                 # Datos del responsable
+                nombre_resp_ej = st.session_state.get(f'pa_nombre_resp_ej_nueva_{i}_{j}', '')
                 resp_ej = st.session_state.get(f'pa_resp_ej_nueva_{i}_{j}', '')
                 tiempo = st.session_state.get(f'pa_tiempo_nueva_{i}_{j}', 0)
                 costo = convertir_a_numero(st.session_state.get(f'pa_costo_nueva_{i}_{j}', 0))
                 fecha_inicio = st.session_state.get(f'pa_fecha_inicio_nueva_{i}_{j}', '')
                 fecha_fin = st.session_state.get(f'pa_fecha_fin_nueva_{i}_{j}', '')
+                nombre_resp_seg = st.session_state.get(f'pa_nombre_resp_seg_nueva_{i}_{j}', '')
                 resp_seg = st.session_state.get(f'pa_resp_seg_nueva_{i}_{j}', '')
                 fecha_seg = st.session_state.get(f'pa_fecha_seg_nueva_{i}_{j}', '')
                 estado = st.session_state.get(f'pa_estado_nueva_{i}_{j}', '')
@@ -2066,8 +2115,10 @@ def generar_excel_acr_completo():
                         escribir_celda_segura(f'E{current_row_pa}', actividad)
                 
                 # Escribir datos del responsable
+                if nombre_resp_ej:
+                    escribir_celda_segura(f'J{current_row_pa}', nombre_resp_ej)
                 if resp_ej:
-                    escribir_celda_segura(f'J{current_row_pa}', resp_ej)
+                    escribir_celda_segura(f'K{current_row_pa}', resp_ej)
                 if tiempo > 0:
                     escribir_celda_segura(f'L{current_row_pa}', tiempo)
                 if costo > 0:
@@ -2076,8 +2127,10 @@ def generar_excel_acr_completo():
                     escribir_celda_segura(f'P{current_row_pa}', formatear_fecha(fecha_inicio))
                 if fecha_fin:
                     escribir_celda_segura(f'R{current_row_pa}', formatear_fecha(fecha_fin))
+                if nombre_resp_seg:
+                    escribir_celda_segura(f'T{current_row_pa}', nombre_resp_seg)
                 if resp_seg:
-                    escribir_celda_segura(f'T{current_row_pa}', resp_seg)
+                    escribir_celda_segura(f'U{current_row_pa}', resp_seg)
                 if fecha_seg:
                     escribir_celda_segura(f'V{current_row_pa}', formatear_fecha(fecha_seg))
                 if estado:

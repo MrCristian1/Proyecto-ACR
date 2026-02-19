@@ -1,15 +1,15 @@
 # Configuración del tema de Streamlit
-# Fuerza el tema oscuro para todos los usuarios
+# Fuerza el tema claro para todos los usuarios
 
 [theme]
 # Tema base: "light" o "dark"
-base = "dark"
+base = "light"
 
 # Colores personalizados (puedes ajustarlos según tu diseño)
 primaryColor = "#3b82f6"        # Azul (botones y elementos principales)
-backgroundColor = "#0f172a"      # Fondo principal oscuro
-secondaryBackgroundColor = "#1e293b"  # Fondo secundario (sidebar, tarjetas)
-textColor = "#e2e8f0"           # Color del texto principal
+backgroundColor = "#ffffff"      # Fondo principal blanco
+secondaryBackgroundColor = "#f1f5f9"  # Fondo secundario gris claro (sidebar, tarjetas)
+textColor = "#1e293b"           # Color del texto principal oscuro
 font = "sans serif"             # Fuente: "sans serif", "serif", o "monospace"
 
 [server]
