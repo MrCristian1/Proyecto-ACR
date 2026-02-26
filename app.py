@@ -86,6 +86,7 @@ def enviar_acr_smtp_env(archivo_bytes, nombre_archivo):
 import streamlit as st
 import pandas as pd
 import openpyxl
+from openpyxl.worksheet.datavalidation import DataValidation
 import requests
 import json
 from datetime import datetime, date
@@ -2239,6 +2240,40 @@ def generar_excel_acr_completo():
             escribir_celda_segura('O89', otros_costos_internos)
         if otros_costos > 0:
             escribir_celda_segura('V89', otros_costos)
+
+        # Aplicar validaciones de datos (listas desplegables) explícitamente
+        # Esto garantiza que se conserven independientemente de lo que haga openpyxl con el archivo base
+        sheet.data_validations.dataValidation.clear()
+
+        # 1. FUENTE EN LA QUE SE ORIGINA - D5
+        dv_fuente = DataValidation(type="list", formula1="'Criterios '!$E$4:$E$12", allow_blank=True, showDropDown=False)
+        dv_fuente.sqref = "D5"
+        sheet.add_data_validation(dv_fuente)
+
+        # 2. Proceso - I4
+        dv_proceso = DataValidation(type="list", formula1="'Criterios '!$C$3:$C$14", allow_blank=True, showDropDown=False)
+        dv_proceso.sqref = "I4"
+        sheet.add_data_validation(dv_proceso)
+
+        # 3. TIPO DE ACCIÓN - V4
+        dv_tipo = DataValidation(type="list", formula1="'Criterios '!$F$21:$F$22", allow_blank=True, showDropDown=False)
+        dv_tipo.sqref = "V4"
+        sheet.add_data_validation(dv_tipo)
+
+        # 4. TRATAMIENTO - V5
+        dv_tratamiento = DataValidation(type="list", formula1="'Criterios '!$G$21:$G$25", allow_blank=True, showDropDown=False)
+        dv_tratamiento.sqref = "V5"
+        sheet.add_data_validation(dv_tratamiento)
+
+        # 5. EVALUACIÓN DEL RIESGO - Z4
+        dv_riesgo = DataValidation(type="list", formula1="'Criterios '!$C$21:$C$24", allow_blank=True, showDropDown=False)
+        dv_riesgo.sqref = "Z4"
+        sheet.add_data_validation(dv_riesgo)
+
+        # 6. Estado (plan de acción) - W53:W72
+        dv_estado = DataValidation(type="list", formula1="'Criterios '!$E$21:$E$23", allow_blank=True, showDropDown=False)
+        dv_estado.sqref = "W53:W72"
+        sheet.add_data_validation(dv_estado)
 
         # Guardar en memoria
         output = BytesIO()
